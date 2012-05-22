@@ -37,7 +37,20 @@ module ActsAsCsv
       end
     end
 
-    def each
+    def each_test (&block)
+      block.call
+    end
+
+    def each(&block)
+      @csv_contents.each{|row|
+        current_row = Hash.new
+        # Create the hash to send to the new object
+        row.zip(@headers).each {|col, header|
+          current_row[header] = col 
+        }
+        # Return the CsvRow
+        yield CsvRow.new(current_row)
+      }
     end
     
     attr_accessor :headers, :csv_contents
@@ -49,12 +62,14 @@ end
 
 class CsvRow
     attr_accessor :columns
+    # Columns is a hash containing the colheader => colvalue
     def initialize columns
         @columns = columns
     end
 
-    def self.method_missing name, *args
-
+    def method_missing(name, *args)
+      col = name.to_s
+      @columns[col]
     end
 end
 
@@ -66,6 +81,5 @@ end
 m = RubyCsv.new
 puts m.headers.inspect
 puts m.csv_contents.inspect
-m.each {|t| 
-    puts t 
-}
+m.each {|row| puts row.first}
+m.each {|row| puts row.last}
