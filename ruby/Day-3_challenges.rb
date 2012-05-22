@@ -38,7 +38,6 @@ module ActsAsCsv
     end
 
     def each
-        puts 'No each method fur u'
     end
     
     attr_accessor :headers, :csv_contents
@@ -46,6 +45,17 @@ module ActsAsCsv
       read 
     end
   end
+end
+
+class CsvRow
+    attr_accessor :columns
+    def initialize columns
+        @columns = columns
+    end
+
+    def self.method_missing name, *args
+
+    end
 end
 
 class RubyCsv  # no inheritance! You can mix it in
